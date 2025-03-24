@@ -1,0 +1,137 @@
+﻿@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<div class="jumbotron">
+    <h1 class="display-4">Veteriner Kliniği Yönetim Sistemi</h1>
+    <p class="lead">Bu uygulama, veteriner kliniğinizin hasta ve sahip kayıtlarını, muayene ve tedavi bilgilerini yönetmenize yardımcı olur.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Hayvanlar</h5>
+            </div>
+            <div class="card-body text-center">
+                <h2>@ViewBag.TotalPets</h2>
+                <p>Kayıtlı hayvan sayısı</p>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-controller="Pets" asp-action="Index" class="btn btn-outline-primary">Hayvanları Görüntüle</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Hayvan Sahipleri</h5>
+            </div>
+            <div class="card-body text-center">
+                <h2>@ViewBag.TotalOwners</h2>
+                <p>Kayıtlı hayvan sahibi sayısı</p>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-controller="Owners" asp-action="Index" class="btn btn-outline-success">Sahipleri Görüntüle</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Muayeneler</h5>
+            </div>
+            <div class="card-body text-center">
+                <h2>@(ViewBag.RecentInspections?.Count ?? 0)</h2>
+                <p>Son muayene sayısı</p>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-controller="Inspections" asp-action="Index" class="btn btn-outline-info">Muayeneleri Görüntüle</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0">Son Muayeneler</h5>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.RecentInspections != null && ViewBag.RecentInspections.Count > 0)
+                {
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Hayvan</th>
+                                <th>Teşhis</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var inspection in ViewBag.RecentInspections)
+                            {
+                                <tr>
+                                    <td>@(inspection.ExamDate?.ToString("dd.MM.yyyy") ?? "-")</td>
+                                    <td>@(inspection.Pet?.Name ?? "-")</td>
+                                    <td>@(inspection.Diagnosis ?? "-")</td>
+                                    <td>
+                                        <a asp-controller="Inspections" asp-action="Details" asp-route-id="@inspection.InspectionId" class="btn btn-sm btn-info">Detay</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-center py-3">Henüz muayene kaydı bulunmamaktadır.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Yaklaşan Aşı Hatırlatmaları</h5>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.UpcomingVaccinations != null && ViewBag.UpcomingVaccinations.Count > 0)
+                {
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Hayvan</th>
+                                <th>Aşı Türü</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var vaccination in ViewBag.UpcomingVaccinations)
+                            {
+                                <tr>
+                                    <td>@(vaccination.NextVaccinationDate?.ToString("dd.MM.yyyy") ?? "-")</td>
+                                    <td>@(vaccination.Pet?.Name ?? "-")</td>
+                                    <td>@("[Aşı Bilgisi]")</td>
+                                    <td>
+                                        <a asp-controller="Vaccinations" asp-action="Details" asp-route-id="@vaccination.VaccinationId" class="btn btn-sm btn-danger">Detay</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-center py-3">Yaklaşan aşı hatırlatması bulunmamaktadır.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
